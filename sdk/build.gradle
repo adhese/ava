@@ -1,9 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.endare.adhese.sdk"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
