@@ -2,8 +2,11 @@ package com.endare.adhese.sdk;
 
 import android.content.Context;
 
+import com.endare.adhese.sdk.api.APICallback;
 import com.endare.adhese.sdk.api.AdheseAPI;
 import com.endare.adhese.sdk.logging.AdheseLogger;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
@@ -30,13 +33,13 @@ public final class Adhese {
         AdheseLogger.log(AdheseLogger.SDK_EVENT, TAG, "Initialised the SDK.");
     }
 
-    public static void loadAds() {
+    public static void loadAds(@NonNull final APICallback<List<Ad>> callback) {
 
         if (!isInitialised) {
             throw new IllegalStateException("Tried loading ads but Adhese has not initialised yet.");
         }
 
-        adheseAPI.getAds();
+        adheseAPI.getAds(callback);
     }
 
 }

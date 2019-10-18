@@ -17,7 +17,7 @@ import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 
-public class APIManager {
+public final class APIManager {
 
     private static final String TAG = APIManager.class.getSimpleName();
 
@@ -29,7 +29,7 @@ public class APIManager {
         this.baseUrl = baseUrl;
     }
 
-    public void getObject(String url) {
+    public void getObject(String url, final Response.Listener<JSONObject> callback, final Response.ErrorListener errorCallback) {
         String fullUrl = buildUrl(url);
         Log.d(TAG, fullUrl);
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
@@ -38,18 +38,20 @@ public class APIManager {
             @Override
             public void onResponse(JSONObject response) {
                 AdheseLogger.log(TAG, AdheseLogger.NETWORK_RESPONSE, String.format("Success: %s", response.toString()));
+                callback.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 AdheseLogger.log(TAG, AdheseLogger.NETWORK_RESPONSE, String.format("Error: %s", error.toString()));
+                errorCallback.onErrorResponse(error);
             }
         });
 
         queue.add(request);
     }
 
-    public void getArray(String url) {
+    public void getArray(String url, final Response.Listener<JSONArray> callback, final Response.ErrorListener errorCallback) {
         String fullUrl = buildUrl(url);
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
 
@@ -57,11 +59,13 @@ public class APIManager {
             @Override
             public void onResponse(JSONArray response) {
                 AdheseLogger.log(TAG, AdheseLogger.NETWORK_RESPONSE, String.format("Success: %s", response.toString()));
+                callback.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 AdheseLogger.log(TAG, AdheseLogger.NETWORK_RESPONSE, String.format("Error: %s", error.toString()));
+                errorCallback.onErrorResponse(error);
             }
         });
 
