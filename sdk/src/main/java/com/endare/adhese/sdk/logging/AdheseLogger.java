@@ -7,6 +7,7 @@ public final class AdheseLogger {
     private static final String GLOBAL_TAG = "Adhese";
 
     public static String SDK_EVENT = "SDK EVENT";
+    public static String SDK_ERROR = "SDK ERROR";
     public static String NETWORK_REQUEST = "NETWORK - REQUEST";
     public static String NETWORK_RESPONSE = "NETWORK - RESPONSE";
 
