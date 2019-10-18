@@ -22,7 +22,7 @@ public final class Adhese {
     public static void initialise(@NonNull Context context, AdheseOptions adheseOptions) {
 
         if (isInitialised) {
-            AdheseLogger.log(AdheseLogger.SDK_EVENT, TAG, "Tried initialising the SDK but it was already initialised.");
+            AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, "Tried initialising the SDK but it was already initialised.");
             return;
         }
 
@@ -30,7 +30,7 @@ public final class Adhese {
         adheseAPI = new AdheseAPI(context, adheseOptions);
         isInitialised = true;
 
-        AdheseLogger.log(AdheseLogger.SDK_EVENT, TAG, "Initialised the SDK.");
+        AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT,"Initialised the SDK.");
     }
 
     public static void loadAds(@NonNull final APICallback<List<Ad>> callback) {
