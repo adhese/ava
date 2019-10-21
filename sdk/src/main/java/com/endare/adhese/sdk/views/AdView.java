@@ -1,7 +1,10 @@
 package com.endare.adhese.sdk.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -20,7 +23,8 @@ public class AdView extends WebView {
     protected Ad ad;
 
     private APIManager apiManager;
-    private boolean isTrackerCallInProgress;
+    private boolean isViewImpressionCallInProgress;
+    private boolean hasViewImpressionBeenCalled;
     private boolean isContentLoaded;
 
     private OnAdLoadedListener adLoadedListener;
@@ -73,13 +77,19 @@ public class AdView extends WebView {
         this.viewImpressionNotifiedListener = viewImpressionNotifiedListener;
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        triggerViewImpressionWhenVisible();
+    }
+
     private void loadAd() {
         getSettings().setJavaScriptEnabled(true);
         getSettings().setLoadWithOverviewMode(true);
         getSettings().setUseWideViewPort(true);
         loadDataWithBaseURL(null, ad.getContent(), null, null, null);
     }
-
 
     private void init() {
         apiManager = new APIManager(getContext());
@@ -103,6 +113,19 @@ public class AdView extends WebView {
         });
     }
 
+    private void triggerViewImpressionWhenVisible() {
+        if (!hasViewImpressionBeenCalled
+                && !isViewImpressionCallInProgress
+                && ad != null
+                && !TextUtils.isEmpty(ad.getViewableImpressionUrl())
+                && getVisibility() == View.VISIBLE
+                && ViewVisibilityHelper.isVisible(this)
+        ) {
+            AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("%s is visible.", getAd().getSlotName()));
+            notifyViewImpression();
+        }
+    }
+
     private void notifyTracker() {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the tracker for slot %s", ad.getSlotName()));
 
@@ -119,6 +142,32 @@ public class AdView extends WebView {
             @Override
             public void onErrorResponse(VolleyError error) {
                 AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.networkResponse));
+            }
+        });
+    }
+
+    private void notifyViewImpression() {
+        isViewImpressionCallInProgress = true;
+        AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the view impression for slot %s", ad.getSlotName()));
+
+        apiManager.get(ad.getViewableImpressionUrl(), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Notified tracker for slot %s", ad.getSlotName()));
+
+                if (viewImpressionNotifiedListener != null) {
+                    viewImpressionNotifiedListener.onViewImpressionNotified(AdView.this);
+                }
+
+                hasViewImpressionBeenCalled = true;
+                isViewImpressionCallInProgress = false;
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.networkResponse));
+                hasViewImpressionBeenCalled = false;
+                isViewImpressionCallInProgress = false;
             }
         });
     }
