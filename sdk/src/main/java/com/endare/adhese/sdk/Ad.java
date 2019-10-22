@@ -67,6 +67,14 @@ public class Ad {
         return slotName;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public static Ad fromJSON(JSONObject data) throws JSONException {
         Ad ad = new Ad();
 

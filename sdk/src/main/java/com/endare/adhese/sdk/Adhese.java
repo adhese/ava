@@ -8,6 +8,11 @@ import com.endare.adhese.sdk.logging.AdheseLogger;
 import com.endare.adhese.sdk.parameters.Device;
 import com.endare.adhese.sdk.utils.DeviceUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -18,10 +23,19 @@ public final class Adhese {
     private static final String OS_NAME = "Android";
 
     private static boolean isInitialised;
+    private static String htmlWrapper;
     private static AdheseAPI adheseAPI;
     private static Device device;
 
     private static AdheseOptions options;
+
+    public static boolean isIsInitialised() {
+        return isInitialised;
+    }
+
+    public static String getHtmlWrapper() {
+        return htmlWrapper;
+    }
 
     public static void initialise(@NonNull Context context, AdheseOptions adheseOptions) {
 
@@ -35,6 +49,7 @@ public final class Adhese {
         isInitialised = true;
 
         device = determineDevice(context);
+        loadHtmlWrapper(context);
 
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT,"Initialised the SDK.");
     }
@@ -53,6 +68,25 @@ public final class Adhese {
         String deviceInfo = DeviceUtils.determineDeviceType(context).getName();
 
         return new Device(brand, OS_NAME, deviceInfo);
+    }
+
+    private static void loadHtmlWrapper(@NonNull Context context) {
+        StringBuilder sb = new StringBuilder();
+        InputStream is;
+
+        try {
+            is = context.getAssets().open("adhese/adhese_ad_wrapper.html");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8 ));
+            String str;
+            while ((str = br.readLine()) != null) {
+                sb.append(str);
+            }
+            br.close();
+        } catch (IOException e) {
+
+        }
+
+        htmlWrapper = sb.toString();
     }
 
 }

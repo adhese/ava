@@ -1,5 +1,6 @@
 package com.endare.adhese.sdk.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.webkit.WebView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.endare.adhese.sdk.Ad;
+import com.endare.adhese.sdk.Adhese;
 import com.endare.adhese.sdk.api.APIManager;
 import com.endare.adhese.sdk.logging.AdheseLogger;
 
@@ -81,18 +83,14 @@ public class AdView extends WebView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        triggerViewImpressionWhenVisible();
-    }
-
-    private void loadAd() {
-        getSettings().setJavaScriptEnabled(true);
-        getSettings().setLoadWithOverviewMode(true);
-        getSettings().setUseWideViewPort(true);
-        loadDataWithBaseURL(null, ad.getContent(), null, null, null);
+//        triggerViewImpressionWhenVisible();
     }
 
     private void init() {
         apiManager = new APIManager(getContext());
+
+        applySettings();
+
         this.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
 
@@ -110,7 +108,41 @@ public class AdView extends WebView {
 
                 notifyTracker();
             }
+
         });
+    }
+
+    protected void loadAd() {
+
+        if (!Adhese.isIsInitialised()) {
+            throw new IllegalStateException(String.format("Tried creating an %s but the Adhese SDK has not been initialised yet.", AdView.class.getSimpleName()));
+        }
+
+        if (ad == null) {
+            return;
+        }
+
+        loadDataWithBaseURL(null, wrapInHtmlWrapper(determineContentScale(), ad.getContent()), null, null, null);
+    }
+
+    public static String wrapInHtmlWrapper(double scale, String content) {
+        return String.format(Adhese.getHtmlWrapper(), Double.toString(scale), Double.toString(scale), content);
+    }
+
+    private double determineContentScale() {
+        if (ad == null) { return 1; }
+
+        return (double) this.getWidth() / ad.getWidth();
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    protected void applySettings() {
+        getSettings().setJavaScriptEnabled(true);
+        getSettings().setLoadWithOverviewMode(true);
+        getSettings().setUseWideViewPort(true);
+        setVerticalScrollBarEnabled(false);
+        setHorizontalScrollBarEnabled(false);
+        setScrollbarFadingEnabled(false);
     }
 
     private void triggerViewImpressionWhenVisible() {
