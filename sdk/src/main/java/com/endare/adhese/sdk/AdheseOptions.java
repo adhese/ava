@@ -45,6 +45,10 @@ public class AdheseOptions implements URLParameter {
         return device;
     }
 
+    void setDevice(Device device) {
+        this.device = device;
+    }
+
     @Override
     public String getAsURL() {
         StringBuilder builder = new StringBuilder();
@@ -53,7 +57,7 @@ public class AdheseOptions implements URLParameter {
             builder.append(String.format("/%s%s-%s", AdheseParameter.SLOT.getKey(), account, slot));
         }
 
-        builder.append(String.format("/%s%s", cookieMode.getValue(), AdheseParameter.COOKIE_MODE.getKey()));
+        builder.append(String.format("/%s%s", AdheseParameter.COOKIE_MODE.getKey(), cookieMode.getValue()));
 
         if (device != null) {
             builder.append(device.getAsURL());

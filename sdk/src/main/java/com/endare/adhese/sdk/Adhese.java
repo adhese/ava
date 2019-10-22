@@ -27,8 +27,6 @@ public final class Adhese {
     private static AdheseAPI adheseAPI;
     private static Device device;
 
-    private static AdheseOptions options;
-
     public static boolean isIsInitialised() {
         return isInitialised;
     }
@@ -44,8 +42,7 @@ public final class Adhese {
             return;
         }
 
-        options = adheseOptions;
-        adheseAPI = new AdheseAPI(context, adheseOptions);
+        adheseAPI = new AdheseAPI(context);
         isInitialised = true;
 
         device = determineDevice(context);
@@ -54,13 +51,17 @@ public final class Adhese {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT,"Initialised the SDK.");
     }
 
-    public static void loadAds(@NonNull final APICallback<List<Ad>> callback) {
+    public static void loadAds(@NonNull AdheseOptions options, @NonNull final APICallback<List<Ad>> callback) {
 
         if (!isInitialised) {
             throw new IllegalStateException("Tried loading ads but Adhese has not initialised yet.");
         }
 
-        adheseAPI.getAds(callback);
+        if (options.getDevice() == null) {
+            options.setDevice(device);
+        }
+
+        adheseAPI.getAds(options, callback);
     }
 
     public static Device determineDevice(@NonNull Context context) {

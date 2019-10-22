@@ -3,7 +3,6 @@ package com.endare.adhese.sdk.utils;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Build;
 
 import com.endare.adhese.sdk.R;

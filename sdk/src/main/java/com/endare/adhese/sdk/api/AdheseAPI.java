@@ -20,15 +20,13 @@ public final class AdheseAPI {
 
     private static final String BASE_URL = "https://ads-demo.adhese.com/";
     private final APIManager apiManager;
-    private final AdheseOptions adheseOptions;
 
-    public AdheseAPI(@NonNull Context context, AdheseOptions options) {
+    public AdheseAPI(@NonNull Context context) {
         apiManager = new APIManager(context, BASE_URL);
-        adheseOptions = options;
     }
 
-    public void getAds(@NonNull final APICallback<List<Ad>> callback) {
-        apiManager.getArray(String.format("json%s", adheseOptions.getAsURL()), new Response.Listener<JSONArray>() {
+    public void getAds(@NonNull AdheseOptions options, @NonNull final APICallback<List<Ad>> callback) {
+        apiManager.getArray(String.format("json%s", options.getAsURL()), new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
