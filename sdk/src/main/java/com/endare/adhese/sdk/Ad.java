@@ -1,5 +1,7 @@
 package com.endare.adhese.sdk;
 
+import com.endare.adhese.sdk.utils.JSONUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +47,8 @@ public class Ad {
      */
     private JSONObject raw;
 
-    private Ad() {}
+    private Ad() {
+    }
 
     public String getContent() {
         return content;
@@ -78,11 +81,13 @@ public class Ad {
     public static Ad fromJSON(JSONObject data) throws JSONException {
         Ad ad = new Ad();
 
-        if (data.has(Keys.TAG)) {
+        if (!JSONUtils.isTagNonExistentEmptyOrNull(data, Keys.TAG)) {
             ad.content = data.getString(Keys.TAG);
+        } else if (!JSONUtils.isTagNonExistentEmptyOrNull(data, Keys.BODY)) {
+            ad.content = data.getString(Keys.BODY);
+        } else {
+            throw new JSONException("The payload contains neither a tag or body property.");
         }
-
-        // TODO: catch when there is no tag key but body instead
 
         ad.trackerUrl = data.getString(Keys.TRACKER);
         ad.viewableImpressionUrl = data.getString(Keys.VIEWABLE_IMPRESSION_URL);
@@ -99,6 +104,7 @@ public class Ad {
         static final String AD_TYPE = "adType";
         static final String SLOT_NAME = "slotName";
         static final String TAG = "tag";
+        static final String BODY = "body";
         static final String TRACKER = "tracker";
         static final String VIEWABLE_IMPRESSION_URL = "viewableImpressionCounter";
         static final String WIDTH = "width";
