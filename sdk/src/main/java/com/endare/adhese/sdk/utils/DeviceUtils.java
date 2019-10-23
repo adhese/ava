@@ -23,7 +23,8 @@ public final class DeviceUtils {
         return StringUtils.capitalize(manufacturer) + " " + model;
     }
 
-    public static @NonNull DeviceType determineDeviceType(@NonNull Context context) {
+    @NonNull
+    public static DeviceType determineDeviceType(@NonNull Context context) {
 
         if (isTV(context)) {
             return DeviceType.TV;

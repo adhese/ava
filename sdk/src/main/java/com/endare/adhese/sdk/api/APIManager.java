@@ -84,7 +84,7 @@ public final class APIManager {
 
     public void get(String url, @Nullable final Response.Listener<String> callback, @Nullable final Response.ErrorListener errorCallback) {
         String fullUrl = url.startsWith("http") ? url : buildUrl(url);
-        
+
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
 
         StringRequest request = new StringRequest(Request.Method.GET, fullUrl, new Response.Listener<String>() {
