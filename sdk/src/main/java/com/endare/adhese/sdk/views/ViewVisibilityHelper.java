@@ -6,7 +6,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-class ViewVisibilityHelper {
+final class ViewVisibilityHelper {
 
     public static boolean isVisible(final @Nullable View view) {
 

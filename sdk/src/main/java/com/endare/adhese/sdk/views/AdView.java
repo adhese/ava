@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -79,17 +80,11 @@ public class AdView extends WebView {
         this.viewImpressionNotifiedListener = viewImpressionNotifiedListener;
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-//        triggerViewImpressionWhenVisible();
-    }
-
     private void init() {
         apiManager = new APIManager(getContext());
 
         applySettings();
+        registerListeners();
 
         this.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
@@ -107,6 +102,7 @@ public class AdView extends WebView {
                 AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Finished loading slot %s", ad.getSlotName()));
 
                 notifyTracker();
+                triggerViewImpressionWhenVisible();
             }
 
         });
@@ -156,6 +152,15 @@ public class AdView extends WebView {
             AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("%s is visible.", getAd().getSlotName()));
             notifyViewImpression();
         }
+    }
+
+    private void registerListeners() {
+        getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                triggerViewImpressionWhenVisible();
+            }
+        });
     }
 
     private void notifyTracker() {
