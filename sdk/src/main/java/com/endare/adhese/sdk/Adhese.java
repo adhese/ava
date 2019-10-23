@@ -35,7 +35,7 @@ public final class Adhese {
         return htmlWrapper;
     }
 
-    public static void initialise(@NonNull Context context, AdheseOptions adheseOptions) {
+    public static void initialise(@NonNull Context context) {
 
         if (isInitialised) {
             AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, "Tried initialising the SDK but it was already initialised.");
