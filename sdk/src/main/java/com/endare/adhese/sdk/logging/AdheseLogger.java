@@ -11,6 +11,8 @@ public final class AdheseLogger {
     public static String NETWORK_REQUEST = "NETWORK - REQUEST";
     public static String NETWORK_RESPONSE = "NETWORK - RESPONSE";
 
+    private static boolean isLoggingEnabled;
+
     public static void log(String message) {
 
         if (!isLoggingEnabled()) {
@@ -34,7 +36,11 @@ public final class AdheseLogger {
     }
 
     private static boolean isLoggingEnabled() {
-        return true;
+        return isLoggingEnabled;
+    }
+
+    public static void setIsLoggingEnabled(boolean loggingEnabled) {
+        isLoggingEnabled = loggingEnabled;
     }
 
 }

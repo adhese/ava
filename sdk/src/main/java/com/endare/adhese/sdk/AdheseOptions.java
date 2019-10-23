@@ -25,10 +25,6 @@ public class AdheseOptions implements URLParameter {
         return location;
     }
 
-    public boolean isDebugEnabled() {
-        return debugEnabled;
-    }
-
     public String getAccount() {
         return account;
     }
@@ -96,11 +92,6 @@ public class AdheseOptions implements URLParameter {
 
         public Builder withCookieMode(CookieMode cookieMode) {
             this.options.cookieMode = cookieMode;
-            return this;
-        }
-
-        public Builder enableDebugMode() {
-            this.options.debugEnabled = true;
             return this;
         }
 

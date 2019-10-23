@@ -38,14 +38,16 @@ public final class Adhese {
     /**
      * Initialises the Adhese SDK, should be called once on application start-up or in the main activity.
      * @param context The current context when for when the method is called.
+     * @param debugEnabled Determines whether Adhese logging should show in Logcat or not.
      */
-    public static void initialise(@NonNull Context context) {
+    public static void initialise(@NonNull Context context, boolean debugEnabled) {
 
         if (isInitialised) {
             AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, "Tried initialising the SDK but it was already initialised.");
             return;
         }
 
+        AdheseLogger.setIsLoggingEnabled(debugEnabled);
         adheseAPI = new AdheseAPI(context);
         isInitialised = true;
 
@@ -53,6 +55,14 @@ public final class Adhese {
         loadHtmlWrapper(context);
 
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT,"Initialised the SDK.");
+    }
+
+    /**
+     * Initialises the Adhese SDK, should be called once on application start-up or in the main activity.
+     * @param context The current context when for when the method is called.
+     */
+    public static void initialise(@NonNull Context context) {
+        initialise(context, false);
     }
 
     /**

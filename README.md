@@ -31,7 +31,6 @@ The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data
                 .addSlot("billboard")
                 .addSlot("halfpage")
                 .withCookieMode(CookieMode.ALL) // This is the Adhese parameter "tl"
-                .enableDebugMode()
                 .build();
         
         // Load the ad data and assign on of the fetched ads to the AdView    
