@@ -35,6 +35,10 @@ public final class Adhese {
         return htmlWrapper;
     }
 
+    /**
+     * Initialises the Adhese SDK, should be called once on application start-up or in the main activity.
+     * @param context The current context when for when the method is called.
+     */
     public static void initialise(@NonNull Context context) {
 
         if (isInitialised) {
@@ -51,6 +55,11 @@ public final class Adhese {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT,"Initialised the SDK.");
     }
 
+    /**
+     * Loads the ads with a given set of AdheseOptions and returns the result async with a callback.
+     * @param options The options to send to the parameter.
+     * @param callback The callback that will return the ads data.
+     */
     public static void loadAds(@NonNull AdheseOptions options, @NonNull final APICallback<List<Ad>> callback) {
 
         if (!isInitialised) {
@@ -64,6 +73,11 @@ public final class Adhese {
         adheseAPI.getAds(options, callback);
     }
 
+    /**
+     * Performs some magic to determine the device properties where the SDK is running on.
+     * @param context The context used to fetch some metadata.
+     * @return A Device instance
+     */
     public static Device determineDevice(@NonNull Context context) {
         String brand = DeviceUtils.getDeviceName();
         String deviceInfo = DeviceUtils.determineDeviceType(context).getName();
@@ -71,6 +85,10 @@ public final class Adhese {
         return new Device(brand, OS_NAME, deviceInfo);
     }
 
+    /**
+     * Loads the static HTML page stored in the assets. This is required to display the ads optimally in a webview.
+     * @param context The context used to fetch the asset.
+     */
     private static void loadHtmlWrapper(@NonNull Context context) {
         StringBuilder sb = new StringBuilder();
         InputStream is;
@@ -84,7 +102,7 @@ public final class Adhese {
             }
             br.close();
         } catch (IOException e) {
-
+            AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, "Something went wrong loading the HTML asset, ads will not display properly!");
         }
 
         htmlWrapper = sb.toString();

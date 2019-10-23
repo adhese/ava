@@ -17,6 +17,11 @@ public final class AdheseLogger {
             return;
         }
 
+        if (message.contains(SDK_ERROR)) {
+            Log.e(GLOBAL_TAG, message);
+            return;
+        }
+
         Log.d(GLOBAL_TAG, message);
     }
 

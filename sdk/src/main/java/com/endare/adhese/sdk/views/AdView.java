@@ -22,6 +22,10 @@ import com.endare.adhese.sdk.logging.AdheseLogger;
 
 import androidx.annotation.NonNull;
 
+/**
+ * A view used to display an ad. The view handles the calling of tracker URLs and view impressions
+ * on its own.
+ */
 public class AdView extends WebView {
 
     public static final String TAG = AdView.class.getSimpleName();
@@ -74,6 +78,10 @@ public class AdView extends WebView {
         this.loadAd();
     }
 
+    /**
+     * Returns whether or not the AdView should handle opening the URL by itself or not when the
+     * ad is clicked.
+     */
     public boolean shouldOpenAd() {
         return shouldOpenAd;
     }
