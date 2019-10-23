@@ -2,7 +2,6 @@ package com.endare.adhese.sdk.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,11 +9,11 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.endare.adhese.sdk.Ad;
 import com.endare.adhese.sdk.Adhese;
-import com.endare.adhese.sdk.api.APIManager;
+import com.endare.adhese.sdk.api.APICallback;
+import com.endare.adhese.sdk.api.APIError;
+import com.endare.adhese.sdk.api.AdheseAPI;
 import com.endare.adhese.sdk.logging.AdheseLogger;
 
 import androidx.annotation.NonNull;
@@ -25,7 +24,7 @@ public class AdView extends WebView {
 
     protected Ad ad;
 
-    private APIManager apiManager;
+    private AdheseAPI adheseAPI;
     private boolean isViewImpressionCallInProgress;
     private boolean hasViewImpressionBeenCalled;
     private boolean isContentLoaded;
@@ -33,6 +32,7 @@ public class AdView extends WebView {
     private OnAdLoadedListener adLoadedListener;
     private OnTrackerNotifiedListener trackingNotifiedListener;
     private OnViewImpressionNotifiedListener viewImpressionNotifiedListener;
+    private OnErrorListener errorListener;
 
     public AdView(Context context) {
         super(context);
@@ -80,8 +80,12 @@ public class AdView extends WebView {
         this.viewImpressionNotifiedListener = viewImpressionNotifiedListener;
     }
 
+    public void setErrorListener(OnErrorListener errorListener) {
+        this.errorListener = errorListener;
+    }
+
     private void init() {
-        apiManager = new APIManager(getContext());
+        adheseAPI = new AdheseAPI(getContext());
 
         applySettings();
         registerListeners();
@@ -166,19 +170,26 @@ public class AdView extends WebView {
     private void notifyTracker() {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the tracker for slot %s", ad.getSlotName()));
 
-        apiManager.get(ad.getTrackerUrl(), new Response.Listener<String>() {
+        adheseAPI.get(ad.getTrackerUrl(), new APICallback<Void>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(Void data, APIError error) {
+
+                if (error != null) {
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.getErrorTypeName()));
+
+                    if (errorListener != null) {
+                        errorListener.onError(AdView.this, error);
+                    }
+
+                    return;
+                }
+
                 AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Notified tracker for slot %s", ad.getSlotName()));
 
                 if (trackingNotifiedListener != null) {
                     trackingNotifiedListener.onTrackerNotified(AdView.this);
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.networkResponse));
+
             }
         });
     }
@@ -187,9 +198,23 @@ public class AdView extends WebView {
         isViewImpressionCallInProgress = true;
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the view impression for slot %s", ad.getSlotName()));
 
-        apiManager.get(ad.getViewableImpressionUrl(), new Response.Listener<String>() {
+        adheseAPI.get(ad.getViewableImpressionUrl(), new APICallback<Void>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(Void data, APIError error) {
+
+                if (error != null) {
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.getErrorTypeName()));
+                    hasViewImpressionBeenCalled = false;
+                    isViewImpressionCallInProgress = false;
+
+                    if (errorListener != null) {
+                        errorListener.onError(AdView.this, error);
+                    }
+
+                    return;
+                }
+
+
                 AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Notified tracker for slot %s", ad.getSlotName()));
 
                 if (viewImpressionNotifiedListener != null) {
@@ -197,13 +222,6 @@ public class AdView extends WebView {
                 }
 
                 hasViewImpressionBeenCalled = true;
-                isViewImpressionCallInProgress = false;
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.networkResponse));
-                hasViewImpressionBeenCalled = false;
                 isViewImpressionCallInProgress = false;
             }
         });
@@ -228,5 +246,12 @@ public class AdView extends WebView {
      */
     public interface OnViewImpressionNotifiedListener {
         void onViewImpressionNotified(@NonNull AdView adView);
+    }
+
+    /**
+     * A listener that can be implemented to be notified when an error occurs with the ad.
+     */
+    public interface OnErrorListener {
+        void onError(@NonNull AdView adView, APIError error);
     }
 }

@@ -7,6 +7,25 @@ public class APIError extends Exception {
     private final int errorType;
     private final Exception originalException;
 
+    public int getErrorType() {
+        return errorType;
+    }
+
+    public Exception getOriginalException() {
+        return originalException;
+    }
+
+    public String getErrorTypeName() {
+        switch (this.errorType) {
+            case Type.NETWORK_ERROR:
+                return "Network error";
+            case Type.PARSE_ERROR:
+                return "Parse error";
+            default:
+                return "Unknown error";
+        }
+    }
+
     public APIError(int errorType, @Nullable Exception originalException) {
         this.errorType = errorType;
         this.originalException = originalException;

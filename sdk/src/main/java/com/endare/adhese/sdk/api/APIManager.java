@@ -3,6 +3,8 @@ package com.endare.adhese.sdk.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.NetworkError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -37,8 +39,8 @@ public final class APIManager {
     }
 
     public void getObject(String url, final Response.Listener<JSONObject> callback, final Response.ErrorListener errorCallback) {
-        String fullUrl = buildUrl(url);
-        Log.d(TAG, fullUrl);
+        String fullUrl = url.startsWith("http") ? url : buildUrl(url);
+
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, fullUrl, null, new Response.Listener<JSONObject>() {
@@ -59,7 +61,8 @@ public final class APIManager {
     }
 
     public void getArray(String url, final Response.Listener<JSONArray> callback, final Response.ErrorListener errorCallback) {
-        String fullUrl = buildUrl(url);
+        String fullUrl = url.startsWith("http") ? url : buildUrl(url);
+
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, fullUrl, null, new Response.Listener<JSONArray>() {
@@ -80,7 +83,8 @@ public final class APIManager {
     }
 
     public void get(String url, @Nullable final Response.Listener<String> callback, @Nullable final Response.ErrorListener errorCallback) {
-        String fullUrl = buildUrl(url);
+        String fullUrl = url.startsWith("http") ? url : buildUrl(url);
+        
         AdheseLogger.log(TAG, AdheseLogger.NETWORK_REQUEST, String.format("Performing GET for url %s", fullUrl));
 
         StringRequest request = new StringRequest(Request.Method.GET, fullUrl, new Response.Listener<String>() {
