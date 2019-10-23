@@ -2,6 +2,8 @@ package com.endare.adhese.sdk.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -139,7 +141,9 @@ public class AdView extends WebView {
                     return true;
                 }
 
-                return super.shouldOverrideUrlLoading(view, request);
+                openInBrowser(request.getUrl().toString());
+
+                return true;
             }
         });
     }
@@ -197,6 +201,11 @@ public class AdView extends WebView {
                 triggerViewImpressionWhenVisible();
             }
         });
+    }
+
+    private void openInBrowser(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        getContext().startActivity(browserIntent);
     }
 
     private void notifyTracker() {
