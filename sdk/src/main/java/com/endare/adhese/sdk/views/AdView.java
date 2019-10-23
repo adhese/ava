@@ -7,7 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.endare.adhese.sdk.Ad;
 import com.endare.adhese.sdk.Adhese;
@@ -28,11 +30,13 @@ public class AdView extends WebView {
     private boolean isViewImpressionCallInProgress;
     private boolean hasViewImpressionBeenCalled;
     private boolean isContentLoaded;
+    private boolean shouldOpenAd = true;
 
     private OnAdLoadedListener adLoadedListener;
     private OnTrackerNotifiedListener trackingNotifiedListener;
     private OnViewImpressionNotifiedListener viewImpressionNotifiedListener;
     private OnErrorListener errorListener;
+    private OnAdClickListener onAdClickListener;
 
     public AdView(Context context) {
         super(context);
@@ -68,6 +72,14 @@ public class AdView extends WebView {
         this.loadAd();
     }
 
+    public boolean shouldOpenAd() {
+        return shouldOpenAd;
+    }
+
+    public void setShouldOpenAd(boolean shouldOpenAd) {
+        this.shouldOpenAd = shouldOpenAd;
+    }
+
     public void setAdLoadedListener(OnAdLoadedListener adLoadedListener) {
         this.adLoadedListener = adLoadedListener;
     }
@@ -82,6 +94,10 @@ public class AdView extends WebView {
 
     public void setErrorListener(OnErrorListener errorListener) {
         this.errorListener = errorListener;
+    }
+
+    public void setOnAdClickListener(OnAdClickListener onAdClickListener) {
+        this.onAdClickListener = onAdClickListener;
     }
 
     private void init() {
@@ -109,6 +125,22 @@ public class AdView extends WebView {
                 triggerViewImpressionWhenVisible();
             }
 
+        });
+
+        this.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+                if (onAdClickListener != null) {
+                    onAdClickListener.onAdClicked(AdView.this);
+                }
+
+                if (!shouldOpenAd) {
+                    return true;
+                }
+
+                return super.shouldOverrideUrlLoading(view, request);
+            }
         });
     }
 
@@ -246,6 +278,10 @@ public class AdView extends WebView {
      */
     public interface OnViewImpressionNotifiedListener {
         void onViewImpressionNotified(@NonNull AdView adView);
+    }
+
+    public interface OnAdClickListener {
+        void onAdClicked(@NonNull AdView adView);
     }
 
     /**
