@@ -1,5 +1,7 @@
 package com.endare.adhese.sdk;
 
+import android.text.TextUtils;
+
 import com.endare.adhese.sdk.parameters.AdheseParameter;
 import com.endare.adhese.sdk.parameters.CookieMode;
 import com.endare.adhese.sdk.parameters.Device;
@@ -97,7 +99,9 @@ public class AdheseOptions implements URLParameter {
 
         public AdheseOptions build() {
 
-            // TODO: check if all required parameters have been set
+            if (TextUtils.isEmpty(options.account) || TextUtils.isEmpty(options.location) || options.slots.size() == 0) {
+                throw new IllegalArgumentException("To create AdheseOptions you need at least an account, a location and one or more slots.");
+            }
 
             return options;
         }
