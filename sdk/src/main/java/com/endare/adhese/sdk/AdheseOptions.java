@@ -13,7 +13,6 @@ import java.util.List;
 public class AdheseOptions implements URLParameter {
 
     private String location;
-    private boolean debugEnabled;
     private String account;
     private List<String> slots;
     private CookieMode cookieMode = CookieMode.NONE;

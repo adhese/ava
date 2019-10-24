@@ -23,12 +23,11 @@ public class Device implements URLParameter {
         StringBuilder builder = new StringBuilder();
 
         if (!TextUtils.isEmpty(deviceInfo)) {
-            builder.append(String.format("/%s%s", AdheseParameter.DEVICE_ID.getKey(), deviceInfo));
+            builder.append(String.format("/%s%s", AdheseParameter.DEVICE_ID.getKey(), deviceType));
         }
 
         if (!TextUtils.isEmpty(deviceType)) {
-            // TODO: adding this parameter seems to disable loading ads?
-//            builder.append(String.format("/%s%s", AdheseParameter.DEVICE_TYPE.getKey(), deviceType));
+            builder.append(String.format("/%s%s", AdheseParameter.DEVICE_TYPE.getKey(), deviceInfo));
         }
 
         if (!TextUtils.isEmpty(deviceBrand)) {
