@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 29
@@ -6,7 +8,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,6 +19,33 @@ android {
     }
 }
 
+ext {
+    bintrayRepo = 'ava'
+    bintrayName = 'com.endare.adhese.sdk'
+
+    publishedGroupId = 'com.endare.adhese.sdk'
+
+    libraryName = 'ava'
+    artifact = 'sdk'
+
+    libraryDescription = 'The Adhese SDK for Android'
+
+    // Your github repo link
+    siteUrl = 'https://www.adhese.com/'
+    gitUrl = 'https://github.com/adhese/ava.git'
+    githubRepository= 'adhese/ava'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'adhese'
+    developerName = 'Tim Sturtewagen'
+    developerEmail = 'tim@adhese.eu'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -25,3 +54,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+apply from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/bintrayv1.gradle'
