@@ -22,11 +22,11 @@ android {
 ext {
     bintrayRepo = 'ava'
     bintrayName = 'com.endare.adhese.sdk'
+    libraryName = 'sdk'
 
-    publishedGroupId = 'com.endare.adhese.sdk'
-
-    libraryName = 'ava'
+    publishedGroupId = 'com.endare.adhese'
     artifact = 'sdk'
+    libraryVersion = '1.0.0'
 
     libraryDescription = 'The Adhese SDK for Android'
 
@@ -34,8 +34,6 @@ ext {
     siteUrl = 'https://www.adhese.com/'
     gitUrl = 'https://github.com/adhese/ava.git'
     githubRepository= 'adhese/ava'
-
-    libraryVersion = '1.0.0'
 
     developerId = 'adhese'
     developerName = 'Tim Sturtewagen'
@@ -53,6 +51,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+repositories {
+    mavenCentral()
 }
 
 apply from: 'https://raw.githubusercontent.com/nisrulz/JCenter/master/installv1.gradle'
