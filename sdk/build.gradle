@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
+
+def archiveName = 'adhese-sdk'
+def libVersion = '1.0.0'
 
 android {
     compileSdkVersion 29
@@ -8,7 +9,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0.0"
+        versionName libVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,7 +19,6 @@ android {
         }
     }
 }
-
 ext {
     bintrayRepo = 'ava'
     bintrayName = 'com.endare.adhese.sdk'
