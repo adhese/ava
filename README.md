@@ -7,11 +7,11 @@ and to display them with a native view.
 Initialise the SDK once for the application. This can be called in your Application class or MainActivity.
 
         Adhese.initialise(this);
-        
+
 Create your view and add the AdView
 
         ...
-        
+
         <com.endare.adhese.sdk.views.AdView
             android:id="@+id/billboardAd"
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@ Create your view and add the AdView
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp">
         </com.endare.adhese.sdk.views.AdView>
-        
+
         ...
 
 The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data:
@@ -32,7 +32,7 @@ The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data
                 .addSlot("halfpage")
                 .withCookieMode(CookieMode.ALL) // This is the Adhese parameter "tl"
                 .build();
-        
+
         // Load the ad data and assign on of the fetched ads to the AdView    
         Adhese.loadAds(options, new APICallback<List<Ad>>() {
             @Override
@@ -45,7 +45,7 @@ The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data
                 billboardAdView.setAd(billboard);
             }
         });
-        
+
 That's it, your ad should now appear in the view.
 
 ## Available listeners
@@ -61,3 +61,17 @@ The `AdView` has a few listeners available that can be implemented to watch for 
 
 Call `AdView.setShouldOpenAd()` to enable/disable automatic opening of the ad in the browser. The default value is true, so it will open automatically.
 However, when setting it to false and implementing the `OnAdClickListener` you can implement custom behaviour
+
+## Publishing
+The Gradle file has been set-up to enable publishing to JCenter (Bintray).
+
+Make sure the following details have been added to the `local.properties` file:
+
+    bintray.pkg.userOrg=xxxxxx
+    bintray.user=xxxxxxxx
+    bintray.apikey=xxxxxxxxxxxxxxxx
+
+Follow these steps to publish the SDK:
+1. Change the version number in the `build.gradle` file.
+2. Run the following command: `./gradlew bintrayUpload`
+3. When successful you should see your new version on `https://bintray.com/tsturtew/ava/com.endare.adhese.sdk`
