@@ -17,7 +17,6 @@ import com.endare.adhese.sdk.Ad;
 import com.endare.adhese.sdk.Adhese;
 import com.endare.adhese.sdk.api.APICallback;
 import com.endare.adhese.sdk.api.APIError;
-import com.endare.adhese.sdk.api.AdheseAPI;
 import com.endare.adhese.sdk.logging.AdheseLogger;
 
 import androidx.annotation.NonNull;
@@ -32,7 +31,6 @@ public class AdView extends WebView {
 
     protected Ad ad;
 
-    private AdheseAPI adheseAPI;
     private boolean isViewImpressionCallInProgress;
     private boolean hasViewImpressionBeenCalled;
     private boolean isContentLoaded;
@@ -111,8 +109,6 @@ public class AdView extends WebView {
     }
 
     private void init() {
-        adheseAPI = new AdheseAPI(getContext());
-
         applySettings();
         registerListeners();
 
@@ -219,7 +215,7 @@ public class AdView extends WebView {
     private void notifyTracker() {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the tracker for slot %s", ad.getSlotName()));
 
-        adheseAPI.get(ad.getTrackerUrl(), new APICallback<Void>() {
+        Adhese.getAPI().get(ad.getTrackerUrl(), new APICallback<Void>() {
             @Override
             public void onResponse(Void data, APIError error) {
 
@@ -247,7 +243,7 @@ public class AdView extends WebView {
         isViewImpressionCallInProgress = true;
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the view impression for slot %s", ad.getSlotName()));
 
-        adheseAPI.get(ad.getViewableImpressionUrl(), new APICallback<Void>() {
+        Adhese.getAPI().get(ad.getViewableImpressionUrl(), new APICallback<Void>() {
             @Override
             public void onResponse(Void data, APIError error) {
 

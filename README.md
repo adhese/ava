@@ -5,8 +5,9 @@ and to display them with a native view.
 
 ## Code example
 Initialise the SDK once for the application. This can be called in your Application class or MainActivity.
+The first parameter should be an Android Context and the second parameter is the account name.
 
-        Adhese.initialise(this);
+        Adhese.initialise(this, "demo");
 
 Create your view and add the AdView
 
@@ -26,8 +27,7 @@ The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data
 
         // Build the options
         AdheseOptions options = new AdheseOptions.Builder()
-                .withAccount("_demo_ster_a_")
-                .forLocation("demo")
+                .forLocation("_demo_ster_a_")
                 .addSlot("billboard")
                 .addSlot("halfpage")
                 .withCookieMode(CookieMode.ALL) // This is the Adhese parameter "tl"

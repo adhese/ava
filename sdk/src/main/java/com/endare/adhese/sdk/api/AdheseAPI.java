@@ -20,11 +20,11 @@ import androidx.annotation.NonNull;
 
 public final class AdheseAPI {
 
-    private static final String BASE_URL = "https://ads-demo.adhese.com/";
+    private static final String BASE_URL = "https://ads-%s.adhese.com/";
     private final APIManager apiManager;
 
-    public AdheseAPI(@NonNull Context context) {
-        apiManager = new APIManager(context, BASE_URL);
+    public AdheseAPI(@NonNull Context context, String account) {
+        apiManager = new APIManager(context, String.format(BASE_URL, account));
     }
 
     public void getAds(@NonNull AdheseOptions options, @NonNull final APICallback<List<Ad>> callback) {

@@ -13,7 +13,10 @@ import java.util.List;
 public class AdheseOptions implements URLParameter {
 
     private String location;
+
+    @Deprecated
     private String account;
+
     private List<String> slots;
     private CookieMode cookieMode = CookieMode.NONE;
     private Device device;
@@ -26,6 +29,7 @@ public class AdheseOptions implements URLParameter {
         return location;
     }
 
+    @Deprecated
     public String getAccount() {
         return account;
     }
@@ -51,7 +55,7 @@ public class AdheseOptions implements URLParameter {
         StringBuilder builder = new StringBuilder();
 
         for (String slot : slots) {
-            builder.append(String.format("/%s%s-%s", AdheseParameter.SLOT.getKey(), account, slot));
+            builder.append(String.format("/%s%s-%s", AdheseParameter.SLOT.getKey(), location, slot));
         }
 
         builder.append(String.format("/%s%s", AdheseParameter.COOKIE_MODE.getKey(), cookieMode.getValue()));
@@ -76,6 +80,7 @@ public class AdheseOptions implements URLParameter {
             return this;
         }
 
+        @Deprecated
         public Builder withAccount(String account) {
             options.account = account;
             return this;
@@ -98,8 +103,8 @@ public class AdheseOptions implements URLParameter {
 
         public AdheseOptions build() {
 
-            if (TextUtils.isEmpty(options.account) || TextUtils.isEmpty(options.location) || options.slots.size() == 0) {
-                throw new IllegalArgumentException("To create AdheseOptions you need at least an account, a location and one or more slots.");
+            if (TextUtils.isEmpty(options.location) || options.slots.size() == 0) {
+                throw new IllegalArgumentException("To create AdheseOptions you need at least a location and one or more slots.");
             }
 
             return options;
