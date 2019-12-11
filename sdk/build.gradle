@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 def archiveName = 'adhese-sdk'
-def libVersion = '1.1.0'
+def libVersion = '1.1.1'
 
 android {
     compileSdkVersion 29
