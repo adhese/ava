@@ -162,11 +162,19 @@ public class AdView extends WebView {
             return;
         }
 
-        loadDataWithBaseURL(null, wrapInHtmlWrapper(determineContentScale(), ad.getContent()), null, null, null);
+        loadDataWithBaseURL(null, wrapInHtmlWrapper(determineContentScale(), ad), null, null, null);
     }
 
+    /**
+     * @deprecated use wrapInHtmlWrapper(double scale, Ad ad) instead (includes better content scaling)
+     */
+    @Deprecated
     public static String wrapInHtmlWrapper(double scale, String content) {
         return String.format(Adhese.getHtmlWrapper(), Double.toString(scale), Double.toString(scale), content);
+    }
+
+    public static String wrapInHtmlWrapper(double scale, Ad ad) {
+        return String.format(Adhese.getHtmlWrapper(), Double.toString(scale), Double.toString(scale), Math.round(ad.getWidth() * scale), Math.round(ad.getHeight() * scale), ad.getContent());
     }
 
     private double determineContentScale() {
