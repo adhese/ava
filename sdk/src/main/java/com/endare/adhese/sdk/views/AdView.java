@@ -180,7 +180,11 @@ public class AdView extends WebView {
     private double determineContentScale() {
         if (ad == null) { return 1; }
 
-        return (double) this.getWidth() / ad.getWidth();
+        if (ad.getWidth() < this.getHeight()) {
+            return (double) this.getHeight() / ad.getHeight();
+        } else {
+            return (double) this.getWidth() / ad.getWidth();
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
