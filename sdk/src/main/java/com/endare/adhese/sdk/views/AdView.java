@@ -260,7 +260,7 @@ public class AdView extends WebView {
             public void onResponse(Void data, APIError error) {
 
                 if (error != null) {
-                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.getErrorTypeName()));
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to send view impression for slot: %s", error.getErrorTypeName()));
                     hasViewImpressionBeenCalled = false;
                     isViewImpressionCallInProgress = false;
 
