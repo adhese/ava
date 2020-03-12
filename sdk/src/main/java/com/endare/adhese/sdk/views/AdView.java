@@ -251,7 +251,7 @@ public class AdView extends WebView {
                 }
             });
         } else {
-
+            AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("No tracker to notify for slot: %s", ad.getSlotName()));
         }
     }
 
