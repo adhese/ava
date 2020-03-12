@@ -2,13 +2,12 @@ package com.endare.adhese.sdk;
 
 import com.endare.adhese.sdk.logging.AdheseLogger;
 import com.endare.adhese.sdk.utils.JSONUtils;
-import com.endare.adhese.sdk.views.AdView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Ad {
-    static final String TAG = AdView.class.getSimpleName();
+    static final String TAG = Ad.class.getSimpleName();
 
     /**
      * The actual HTML content to display

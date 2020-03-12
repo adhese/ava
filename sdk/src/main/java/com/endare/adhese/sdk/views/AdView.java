@@ -227,28 +227,32 @@ public class AdView extends WebView {
     private void notifyTracker() {
         AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Will notify the tracker for slot %s", ad.getSlotName()));
 
-        Adhese.getAPI().get(ad.getTrackerUrl(), new APICallback<Void>() {
-            @Override
-            public void onResponse(Void data, APIError error) {
+        if (!TextUtils.isEmpty(ad.getTrackerUrl())) {
+            Adhese.getAPI().get(ad.getTrackerUrl(), new APICallback<Void>() {
+                @Override
+                public void onResponse(Void data, APIError error) {
 
-                if (error != null) {
-                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.getErrorTypeName()));
+                    if (error != null) {
+                        AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the tracker: %s", error.getErrorTypeName()));
 
-                    if (errorListener != null) {
-                        errorListener.onError(AdView.this, error);
+                        if (errorListener != null) {
+                            errorListener.onError(AdView.this, error);
+                        }
+
+                        return;
                     }
 
-                    return;
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Notified tracker for slot %s", ad.getSlotName()));
+
+                    if (trackingNotifiedListener != null) {
+                        trackingNotifiedListener.onTrackerNotified(AdView.this);
+                    }
+
                 }
+            });
+        } else {
 
-                AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("Notified tracker for slot %s", ad.getSlotName()));
-
-                if (trackingNotifiedListener != null) {
-                    trackingNotifiedListener.onTrackerNotified(AdView.this);
-                }
-
-            }
-        });
+        }
     }
 
     private void notifyViewImpression() {
