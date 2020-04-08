@@ -1,11 +1,13 @@
 package com.endare.adhese.sdk;
 
+import com.endare.adhese.sdk.logging.AdheseLogger;
 import com.endare.adhese.sdk.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Ad {
+    static final String TAG = Ad.class.getSimpleName();
 
     /**
      * The actual HTML content to display
@@ -89,13 +91,26 @@ public class Ad {
             throw new JSONException("The payload contains neither a tag or body property.");
         }
 
-        ad.trackerUrl = data.getString(Keys.TRACKER);
-        ad.viewableImpressionUrl = data.getString(Keys.VIEWABLE_IMPRESSION_URL);
         ad.adType = data.getString(Keys.AD_TYPE);
         ad.slotName = data.getString(Keys.SLOT_NAME);
         ad.width = data.getInt(Keys.WIDTH);
         ad.height = data.getInt(Keys.HEIGHT);
         ad.raw = data;
+
+        if (data.has(Keys.TRACKER)) {
+            ad.trackerUrl = data.getString(Keys.TRACKER);
+        } else {
+            ad.trackerUrl = null;
+            AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("%s is loaded without tracker url.", ad.getSlotName()));
+        }
+
+        if (data.has(Keys.VIEWABLE_IMPRESSION_URL)) {
+            ad.viewableImpressionUrl = data.getString(Keys.VIEWABLE_IMPRESSION_URL);
+        } else {
+            ad.viewableImpressionUrl = null;
+            AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("%s is loaded without viewable impression url.", ad.getSlotName()));
+        }
+
 
         return ad;
     }
