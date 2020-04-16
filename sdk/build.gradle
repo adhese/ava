@@ -57,3 +57,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply from: getRootDir().toString() + '/installv1.gradle'
+apply from: getRootDir().toString() + '/bintrayv1.gradle'
