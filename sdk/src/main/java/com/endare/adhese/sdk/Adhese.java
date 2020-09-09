@@ -1,7 +1,6 @@
 package com.endare.adhese.sdk;
 
 import android.content.Context;
-import android.content.Build;
 import android.text.TextUtils;
 
 import com.endare.adhese.sdk.api.APICallback;
@@ -139,10 +138,9 @@ public final class Adhese {
     /**
      * Validates the Device the SDK is running on for compatibility
      *
-     * @param context The context used to fetch some metadata.
      * @return True when the device is compatible
      */
-    public static boolean validateDevice(@NonNull Context context) {
+    public static boolean validateDevice() {
         return (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.M);
     }
 
