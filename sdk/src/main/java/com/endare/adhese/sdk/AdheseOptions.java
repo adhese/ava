@@ -8,7 +8,13 @@ import com.endare.adhese.sdk.parameters.Device;
 import com.endare.adhese.sdk.parameters.URLParameter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AdheseOptions implements URLParameter {
 
@@ -20,9 +26,11 @@ public class AdheseOptions implements URLParameter {
     private List<String> slots;
     private CookieMode cookieMode = CookieMode.NONE;
     private Device device;
+    private Map<String, Set<String>> customParameters;
 
     private AdheseOptions() {
         slots = new ArrayList<>();
+        customParameters = new HashMap<>();
     }
 
     public String getLocation() {
@@ -59,6 +67,14 @@ public class AdheseOptions implements URLParameter {
         }
 
         builder.append(String.format("/%s%s", AdheseParameter.COOKIE_MODE.getKey(), cookieMode.getValue()));
+        for (Map.Entry<String, Set<String>> customParameter: customParameters.entrySet()) {
+            StringBuilder values = new StringBuilder();
+            for (String value: customParameter.getValue()) {
+                values.append(String.format("%s%s", value, ";"));
+            }
+            String valueString = values.toString();
+            builder.append(String.format("/%s%s", customParameter.getKey(), valueString.substring(0, valueString.length() - 1)));
+        }
 
         if (device != null) {
             builder.append(device.getAsURL());
@@ -98,6 +114,24 @@ public class AdheseOptions implements URLParameter {
 
         public Builder withCookieMode(CookieMode cookieMode) {
             this.options.cookieMode = cookieMode;
+            return this;
+        }
+
+        public Builder addCustomParameter(String key, String... values) {
+            return this.addCustomParameter(key, Arrays.asList(values));
+        }
+
+        public Builder addCustomParameter(String key, Collection<String> values) {
+            if (key == null || values == null || key.length() != 2 || values.isEmpty()) {
+                throw new IllegalArgumentException("To add a valid custom parameter, your key must be two chars long and have at least one value.");
+            }
+
+            if (this.options.customParameters.containsKey(key)) {
+                this.options.customParameters.get(key).addAll(values);
+            } else {
+                this.options.customParameters.put(key, new HashSet<>(values));
+            }
+
             return this;
         }
 
