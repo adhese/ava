@@ -7,15 +7,7 @@ import com.endare.adhese.sdk.parameters.CookieMode;
 import com.endare.adhese.sdk.parameters.Device;
 import com.endare.adhese.sdk.parameters.URLParameter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AdheseOptions implements URLParameter {
 
@@ -72,7 +64,8 @@ public class AdheseOptions implements URLParameter {
         }
 
         builder.append(String.format("/%s%s", AdheseParameter.COOKIE_MODE.getKey(), cookieMode.getValue()));
-        for (Map.Entry<String, Set<String>> customParameter: customParameters.entrySet()) {
+        TreeMap<String, Set<String>> sorted = new TreeMap<>(customParameters);
+        for (Map.Entry<String, Set<String>> customParameter: sorted.entrySet()) {
             StringBuilder values = new StringBuilder();
             for (String value: customParameter.getValue()) {
                 values.append(String.format("%s%s", value, ";"));

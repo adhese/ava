@@ -67,6 +67,15 @@ public class AdheseOptionsTest {
         assertEquals("/slloc1-slot1/tlnone/xaabc;def;ghi", builder.build().getAsURL());
     }
 
+    @Test
+    public void custom_parameter_are_sorted() {
+        AdheseOptions.Builder builder = getBaseBuilder();
+        builder.addCustomParameterRaw("zz", Arrays.asList("abc"));
+        builder.addCustomParameterRaw("aa", Arrays.asList("abc"));
+        builder.addCustomParameterRaw("oo", Arrays.asList("abc"));
+        assertEquals("/slloc1-slot1/tlnone/aaabc/ooabc/zzabc", builder.build().getAsURL());
+    }
+
     @Test( expected = IllegalArgumentException.class)
     public void custom_parameter_validate_key() {
         AdheseOptions.Builder builder = getBaseBuilder();
