@@ -10,6 +10,7 @@ import com.endare.adhese.sdk.parameters.URLParameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +57,10 @@ public class AdheseOptions implements URLParameter {
 
     void setDevice(Device device) {
         this.device = device;
+    }
+
+    public Map<String, Set<String>> getCustomParameters() {
+        return customParameters;
     }
 
     @Override
@@ -117,11 +122,11 @@ public class AdheseOptions implements URLParameter {
             return this;
         }
 
-        public Builder addCustomParameter(String key, String... values) {
-            return this.addCustomParameter(key, Arrays.asList(values));
+        public Builder addCustomParameterRaw(String key, String value) {
+            return this.addCustomParameterRaw(key, Arrays.asList(value));
         }
 
-        public Builder addCustomParameter(String key, Collection<String> values) {
+        public Builder addCustomParameterRaw(String key, Collection<String> values) {
             if (key == null || values == null || key.length() != 2 || values.isEmpty()) {
                 throw new IllegalArgumentException("To add a valid custom parameter, your key must be two chars long and have at least one value.");
             }
@@ -135,6 +140,24 @@ public class AdheseOptions implements URLParameter {
             return this;
         }
 
+        public Builder addCustomParametersRaw(Map<String, ? extends Collection<String>> map) {
+            for (Map.Entry<String, ? extends Collection<String>> entry: map.entrySet()) {
+                this.addCustomParameterRaw(entry.getKey(), entry.getValue());
+            }
+
+            return this;
+        }
+
+        public Builder removeCustomParameters() {
+            this.options.customParameters = Collections.emptyMap();
+            return this;
+        }
+
+        public Builder removeCustomParameter(String key) {
+            this.options.customParameters.remove(key);
+            return this;
+        }
+
         public AdheseOptions build() {
 
             if (TextUtils.isEmpty(options.location) || options.slots.size() == 0) {
@@ -145,4 +168,14 @@ public class AdheseOptions implements URLParameter {
         }
     }
 
+    public Builder clone() {
+        AdheseOptions.Builder clone = new AdheseOptions.Builder();
+        clone.addSlots(this.getSlots());
+        clone.addCustomParametersRaw(this.getCustomParameters());
+        clone.forLocation(this.getLocation());
+        clone.withCookieMode(this.getCookieMode());
+        clone.withAccount(this.getAccount());
+
+        return clone;
+    }
 }
