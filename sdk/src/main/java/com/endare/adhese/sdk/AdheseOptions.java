@@ -67,11 +67,16 @@ public class AdheseOptions implements URLParameter {
         TreeSet<String> sortedKeys = new TreeSet<>(customParameters.keySet());
         for (String key: sortedKeys) {
             StringBuilder values = new StringBuilder();
-            for (String value: customParameters.get(key)) {
-                values.append(String.format("%s%s", value, ";"));
+            List<String> valueList = new ArrayList(customParameters.get(key));
+            for (int i = 0; i < valueList.size(); i++) {
+                if (i < valueList.size() - 1) {
+                    values.append(String.format("%s%s", valueList.get(i), ";"));
+                } else {
+                    values.append(valueList.get(i));
+                }
             }
             String valueString = values.toString();
-            builder.append(String.format("/%s%s", key, valueString.substring(0, valueString.length() - 1)));
+            builder.append(String.format("/%s%s", key, valueString));
         }
 
         if (device != null) {

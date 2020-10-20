@@ -1,6 +1,5 @@
 package com.endare.adhese.sdk;
 
-import com.endare.adhese.sdk.parameters.Device;
 import org.junit.Test;
 
 import java.util.*;
