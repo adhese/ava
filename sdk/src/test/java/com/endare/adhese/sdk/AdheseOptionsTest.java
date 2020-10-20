@@ -26,7 +26,7 @@ public class AdheseOptionsTest {
     public void custom_parameter_case_map() {
         AdheseOptions.Builder builder = getBaseBuilder();
         Map map = new HashMap<String, List<String>>();
-        map.put("xa", Arrays.asList("abc", "def", "ghi"));
+        map.put("xa", Arrays.asList("def", "ghi", "abc"));
         builder.addCustomParametersRaw(map);
         assertEquals("/slloc1-slot1/tlnone/xaabc;def;ghi", builder.build().getAsURL());
     }
