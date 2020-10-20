@@ -64,14 +64,14 @@ public class AdheseOptions implements URLParameter {
         }
 
         builder.append(String.format("/%s%s", AdheseParameter.COOKIE_MODE.getKey(), cookieMode.getValue()));
-        TreeMap<String, Set<String>> sorted = new TreeMap<>(customParameters);
-        for (Map.Entry<String, Set<String>> customParameter: sorted.entrySet()) {
+        TreeSet<String> sortedKeys = new TreeSet<>(customParameters.keySet());
+        for (String key: sortedKeys) {
             StringBuilder values = new StringBuilder();
-            for (String value: customParameter.getValue()) {
+            for (String value: customParameters.get(key)) {
                 values.append(String.format("%s%s", value, ";"));
             }
             String valueString = values.toString();
-            builder.append(String.format("/%s%s", customParameter.getKey(), valueString.substring(0, valueString.length() - 1)));
+            builder.append(String.format("/%s%s", key, valueString.substring(0, valueString.length() - 1)));
         }
 
         if (device != null) {
@@ -111,12 +111,12 @@ public class AdheseOptions implements URLParameter {
         }
 
         public Builder withCookieMode(CookieMode cookieMode) {
-            this.options.cookieMode = cookieMode;
+            options.cookieMode = cookieMode;
             return this;
         }
 
         public Builder addCustomParameterRaw(String key, String value) {
-            return this.addCustomParameterRaw(key, Arrays.asList(value));
+            return addCustomParameterRaw(key, Arrays.asList(value));
         }
 
         public Builder addCustomParameterRaw(String key, Collection<String> values) {
@@ -124,10 +124,10 @@ public class AdheseOptions implements URLParameter {
                 throw new IllegalArgumentException("To add a valid custom parameter, your key must be two chars long and have at least one value.");
             }
 
-            if (this.options.customParameters.containsKey(key)) {
-                this.options.customParameters.get(key).addAll(values);
+            if (options.customParameters.containsKey(key)) {
+                options.customParameters.get(key).addAll(values);
             } else {
-                this.options.customParameters.put(key, new HashSet<>(values));
+                options.customParameters.put(key, new HashSet<>(values));
             }
 
             return this;
@@ -135,19 +135,19 @@ public class AdheseOptions implements URLParameter {
 
         public Builder addCustomParametersRaw(Map<String, ? extends Collection<String>> map) {
             for (Map.Entry<String, ? extends Collection<String>> entry: map.entrySet()) {
-                this.addCustomParameterRaw(entry.getKey(), entry.getValue());
+                addCustomParameterRaw(entry.getKey(), entry.getValue());
             }
 
             return this;
         }
 
         public Builder removeCustomParameters() {
-            this.options.customParameters = Collections.emptyMap();
+            options.customParameters.clear();
             return this;
         }
 
         public Builder removeCustomParameter(String key) {
-            this.options.customParameters.remove(key);
+            options.customParameters.remove(key);
             return this;
         }
 
@@ -163,11 +163,11 @@ public class AdheseOptions implements URLParameter {
 
     public Builder clone() {
         AdheseOptions.Builder clone = new AdheseOptions.Builder();
-        clone.addSlots(this.getSlots());
-        clone.addCustomParametersRaw(this.getCustomParameters());
-        clone.forLocation(this.getLocation());
-        clone.withCookieMode(this.getCookieMode());
-        clone.withAccount(this.getAccount());
+        clone.addSlots(getSlots());
+        clone.addCustomParametersRaw(getCustomParameters());
+        clone.forLocation(getLocation());
+        clone.withCookieMode(getCookieMode());
+        clone.withAccount(getAccount());
 
         return clone;
     }
