@@ -25,11 +25,22 @@ Create your view and add the AdView
 
 The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data:
 
+        // custom parameters: example for contextual targeting
+        ArrayList<String> topics = new ArrayList<String>();
+        topics.add("Sports");
+        topics.add("Basketball");
+        
+        ArrayList<String> personalities = new ArrayList<String>();
+        personalities.add("Kobe Bryant");
+        personalities.add("LA Lakers");
+        
         // Build the options
         AdheseOptions options = new AdheseOptions.Builder()
                 .forLocation("_demo_ster_a_")
                 .addSlot("billboard")
                 .addSlot("halfpage")
+                .addCustomerParameterRaw("ct", topics) // custom parameters can be added as a single String or a collection of Strings
+                .addCustomerParameterRaw("rl", personalities)
                 .withCookieMode(CookieMode.ALL) // This is the Adhese parameter "tl"
                 .build();
 
