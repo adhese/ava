@@ -90,19 +90,3 @@ The `AdView` has a few listeners available that can be implemented to watch for 
 Call `AdView.setShouldOpenAd()` to enable/disable automatic opening of the ad in the browser. The default value is true, so it will open automatically.
 However, when setting it to false and implementing the `OnAdClickListener` you can implement custom behaviour
 
-## Publishing
-The Gradle file has been set-up to enable publishing to JCenter (Bintray).
-
-Make sure the following details have been added to the `local.properties` file:
-
-    bintray.pkg.userOrg=xxxxxx
-    bintray.user=xxxxxxxx
-    bintray.apikey=xxxxxxxxxxxxxxxx
-
-Follow these steps to publish the SDK:
-
-1. Change the version number in the `build.gradle` file.
-2. Run the following command: `./gradlew bintrayUpload`
-3. When successful you should see your new version on `https://bintray.com/tsturtew/ava/com.endare.adhese.sdk`
-4. A pop-up should be shown on the website stating that you have unpublished items. Click on publish.
-5. Done!
