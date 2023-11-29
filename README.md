@@ -84,11 +84,15 @@ The `AdView` has a few listeners available that can be implemented to watch for 
         AdView.OnTrackerNotifiedListener            // Triggers when the tracker URL has been called successfully.
         AdView.OnErrorListener                      // Triggers when any error occurs within the AdView (for example failing to call the tracker URL)
         AdView.OnAdClickListener                    // Triggers when the advertisement was clicked.
+        AdView.AdvancedOnAdClickListener            // Triggers when the advertisement was clicked, but passes the resulting url to the listener instead of following it in browser.
 
 ## Extra
 
-Call `AdView.setShouldOpenAd()` to enable/disable automatic opening of the ad in the browser. The default value is true, so it will open automatically.
-However, when setting it to false and implementing the `OnAdClickListener` you can implement custom behaviour
+If you wish to handle navigation after a click yourself, use an AdvancedOnAdClickListener.
+It disables opening up the target url in browser, and passes the the url to the listener.
+
+~~Call `AdView.setShouldOpenAd()` to enable/disable automatic opening of the ad in the browser. The default value is true, so it will open automatically.
+However, when setting it to false and implementing the `OnAdClickListener` you can implement custom behaviour~~
 
 ## Publishing
 The Gradle file has been set-up to enable publishing to JCenter (Bintray).
