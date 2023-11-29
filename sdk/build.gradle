@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 def archiveName = 'adhese-sdk'
-def libVersion = '1.1.2'
+def libVersion = '1.1.7'
 
 android {
     compileSdkVersion 29
@@ -57,3 +57,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply from: getRootDir().toString() + '/installv1.gradle'
+apply from: getRootDir().toString() + '/bintrayv1.gradle'

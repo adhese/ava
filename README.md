@@ -24,12 +24,23 @@ Create your view and add the AdView
         ...
 
 The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data:
-
+        
+        // custom parameters: example for contextual targeting
+        ArrayList<String> topics = new ArrayList<String>();
+        topics.add("Sports");
+        topics.add("Basketball");
+        
+        ArrayList<String> personalities = new ArrayList<String>();
+        personalities.add("Kobe Bryant");
+        personalities.add("LA Lakers");
+        
         // Build the options
         AdheseOptions options = new AdheseOptions.Builder()
                 .forLocation("_demo_ster_a_")
                 .addSlot("billboard")
                 .addSlot("halfpage")
+                .addCustomerParameterRaw("ct", topics) // custom parameters can be added as a single String or a collection of Strings
+                .addCustomerParameterRaw("rl", personalities)
                 .withCookieMode(CookieMode.ALL) // This is the Adhese parameter "tl"
                 .build();
 
@@ -47,6 +58,23 @@ The SDK is now ready to fetch ad data. Here's an example on how to fetch ad data
         });
 
 That's it, your ad should now appear in the view.
+## About Custom Parameters
+The addCustomerParameterRaw method allows you to register data that will be sent to the Adhese endpoint. This data is typically used to target campaigns, generate reporting or create deals and segments for programmatic partners.
+
+Each custom parameter consists of a key and a list of values. The key is a String with a maximum length of 2 chars. In your Adhese account, you need to configure the keys so they can get picked up when processing requests.
+
+[Here is a list of often used targets](https://confluence.adhese.org/display/AD/Request+target+parameters), consult your Adhese support contact for more details.
+
+There are three versions of the addCustomerParameterRaw method. When you register a key multiple times, the values will be merged. Duplicate values will be ignored.
+
+        addCustomParameterRaw(String key, String value); // key has a maximum length of 2 chars
+        addCustomParameterRaw(String key, Collection<String> values); // key has a maximum length of 2 chars
+        addCustomParametersRaw(Map<String, Collection<String>> map); // key has a maximum length of 2 chars
+
+You can also remove targets, useful when you want to reuse an options instance but change some of the custom parameters.
+
+        removeCustomParameters();
+        removeCustomParameter(String key);
 
 ## Available listeners
 The `AdView` has a few listeners available that can be implemented to watch for communication to the Adhese API.

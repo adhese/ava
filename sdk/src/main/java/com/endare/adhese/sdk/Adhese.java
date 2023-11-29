@@ -136,6 +136,15 @@ public final class Adhese {
     }
 
     /**
+     * Validates the Device the SDK is running on for compatibility
+     *
+     * @return True when the device is compatible
+     */
+    public static boolean validateDevice() {
+        return (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.M);
+    }
+
+    /**
      * Loads the static HTML page stored in the assets. This is required to display the ads optimally in a webview.
      *
      * @param context The context used to fetch the asset.
