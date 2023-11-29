@@ -28,6 +28,8 @@ import androidx.annotation.NonNull;
 public class AdView extends WebView {
 
     public static final String TAG = AdView.class.getSimpleName();
+    public static final String PROBLEM_PARSING_CLICK_TRACKER = "There was a problem parsing the click tracker for slot: %s";
+    public static final String NO_CLICK_TRACKER = "No click tracker to notify for slot: %s";
 
     protected Ad ad;
 
@@ -159,11 +161,17 @@ public class AdView extends WebView {
                     } else {
                         targetUrl = null;
                     }
+
+                    if (TextUtils.isEmpty(parts[0])) {
+                        AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format(PROBLEM_PARSING_CLICK_TRACKER, ad.getSlotName()));
+                        return true;
+                    }
+
                     notifyClick(targetUrl, parts[0]);
 
                     return true;
                 } else if (TextUtils.isEmpty(clickTrackUrl)) {
-                    AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("No click tracker to notify for slot: %s", ad.getSlotName()));
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format(NO_CLICK_TRACKER, ad.getSlotName()));
                     return true;
                 }
                 openInBrowser(clickTrackUrl);
