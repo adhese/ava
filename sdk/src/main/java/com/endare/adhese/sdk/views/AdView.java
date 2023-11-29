@@ -41,6 +41,7 @@ public class AdView extends WebView {
     private OnViewImpressionNotifiedListener viewImpressionNotifiedListener;
     private OnErrorListener errorListener;
     private OnAdClickListener onAdClickListener;
+    private AdvancedOnAdClickListener advancedOnAdClickListener;
 
     public AdView(Context context) {
         super(context);
@@ -108,6 +109,10 @@ public class AdView extends WebView {
         this.onAdClickListener = onAdClickListener;
     }
 
+    public void setAdvancedOnAdClickListener(AdvancedOnAdClickListener advancedOnAdClickListener) {
+        this.advancedOnAdClickListener = advancedOnAdClickListener;
+    }
+
     private void init() {
         applySettings();
         registerListeners();
@@ -144,10 +149,45 @@ public class AdView extends WebView {
                 if (!shouldOpenAd) {
                     return true;
                 }
+                String clickTrackUrl = request.getUrl().toString();
 
-                openInBrowser(request.getUrl().toString());
+                if ((advancedOnAdClickListener != null) && (!TextUtils.isEmpty(clickTrackUrl))) {
+                    final String[] parts = clickTrackUrl.split("/UR/?", 2);
+                    final String targetUrl;
+                    if (parts.length == 2) {
+                        targetUrl = parts[1];
+                    } else {
+                        targetUrl = null;
+                    }
+                    notifyClick(targetUrl, parts[0]);
+
+                    return true;
+                } else if (TextUtils.isEmpty(clickTrackUrl)) {
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_EVENT, String.format("No click tracker to notify for slot: %s", ad.getSlotName()));
+                    return true;
+                }
+                openInBrowser(clickTrackUrl);
 
                 return true;
+            }
+        });
+    }
+
+    private void notifyClick(final String targetUrl, String clickTrackerUrl) {
+        Adhese.getAPI().get(clickTrackerUrl, new APICallback<Void>() {
+            @Override
+            public void onResponse(Void data, APIError error) {
+                if (error != null) {
+                    AdheseLogger.log(TAG, AdheseLogger.SDK_ERROR, String.format("Failed to notify the click tracker: %s", error.getErrorTypeName()));
+
+                    if (errorListener != null) {
+                        errorListener.onError(AdView.this, error);
+                    }
+
+                    return;
+                }
+
+                advancedOnAdClickListener.onAdClicked(AdView.this, targetUrl);
             }
         });
     }
@@ -307,6 +347,10 @@ public class AdView extends WebView {
      */
     public interface OnViewImpressionNotifiedListener {
         void onViewImpressionNotified(@NonNull AdView adView);
+    }
+
+    public interface AdvancedOnAdClickListener {
+        void onAdClicked(@NonNull AdView adView, String targetUrl);
     }
 
     public interface OnAdClickListener {
