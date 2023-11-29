@@ -91,6 +91,9 @@ The `AdView` has a few listeners available that can be implemented to watch for 
 If you wish to handle navigation after a click yourself, use an AdvancedOnAdClickListener.
 It disables opening up the target url in browser, and passes the the url to the listener.
 
+You can have both a normal OnAdClickListener and an AdvancedOnAdClickListener at the same time.
+Both will trigger on a click.
+
 ~~Call `AdView.setShouldOpenAd()` to enable/disable automatic opening of the ad in the browser. The default value is true, so it will open automatically.
 However, when setting it to false and implementing the `OnAdClickListener` you can implement custom behaviour~~
 
